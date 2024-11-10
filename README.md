@@ -17,7 +17,7 @@ Clone the repository:
 
 bash
 Copy code
-git clone https://github.com/yourusername/SpendPredictor.git
+git clone https://github.com/bhxvxshh/SpendPredictor.git
 Navigate to the project folder:
 
 bash
