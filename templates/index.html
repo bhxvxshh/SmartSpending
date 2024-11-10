@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Expense Tracker</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    nav ul li {
+      margin-right: 1rem;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    nav ul li a:hover {
+      color: #d00;
+    }
+
+    .widget-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 2rem;
+    }
+
+    .widget {
+      flex: 1;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
+    }
+
+    .widget h2 {
+      color: #d00;
+      margin-bottom: 1rem;
+    }
+     .slideshow-container {
+      position: relative;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .slideshow-container img {
+      width: 100%;
+      height: auto;
+      display: none;
+    }
+
+    /* Next and previous buttons */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      margin-top: -22px;
+      padding: 16px;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.6s ease;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .prev:hover, .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Expense Tracker</div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="/recommendations.csv" id="expenses-link">Expenses</a></li>
+        <li><a href="/analytics">Analytics</a></li>
+        <li><a href="#">Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="widget-container">
+    <div class="widget just4u">
+      <h2>Just 4U</h2>
+      <!-- Placeholder content for Just 4U widget -->
+    </div>
+   <div class="widget listen-to-us">
+      <h2>Listen to Us</h2>
+      <div class="slideshow-container">
+        <!-- Add image elements for the slideshow -->
+        <img src="image1.jpg" alt="Slide 1">
+        <img src="image2.jpg" alt="Slide 2">
+        <img src="image3.jpg" alt="Slide 3">
+
+        <!-- Next and previous buttons -->
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+  </div>
+
+  <script>
+    // Function to fetch and display recommendations from CSV file
+    function displayRecommendations() {
+      fetch('/recommendations.csv')
+        .then(response => response.text())
+        .then(data => {
+          // Split CSV data into rows
+          const rows = data.trim().split('\n');
+
+          // Parse CSV headers (assuming the first row contains headers)
+          const headers = rows[0].split(',');
+
+          // Find index of 'Category' and 'Recommendation' columns
+          const categoryIndex = headers.indexOf('Category');
+          const recommendationIndex = headers.indexOf('Recommendation');
+
+          // Create HTML to display recommendations
+          let html = '<h2>Just 4U</h2>';
+          html += '<ul>';
+
+          // Loop through rows (excluding header row)
+          for (let i = 1; i < rows.length; i++) {
+            // Split row into columns
+            const columns = rows[i].split(',');
+
+            // Ensure columns are not empty
+            if (columns.length >= 2) {
+              // Extract category and recommendation from columns
+              const category = columns[categoryIndex];
+              const recommendation = columns[recommendationIndex];
+
+              // Create HTML for each recommendation
+              html += `<li><strong>${category}</strong>: ${recommendation}</li>`;
+            }
+          }
+
+          html += '</ul>';
+
+          // Update the widget content with the generated HTML
+          document.querySelector('.just4u').innerHTML = html;
+        })
+        .catch(error => console.error('Error fetching recommendations:', error));
+    }
+
+    // Event listener for Expenses link click
+    document.getElementById('expenses-link').addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent default link behavior
+      displayRecommendations(); // Call function to display recommendations
+    });
+    let slideIndex = 1;
+
+    function showSlides(n) {
+      let i;
+      const slides = document.getElementsByClassName("slideshow-container")[0].getElementsByTagName("img");
+      if (n > slides.length) { slideIndex = 1 }
+      if (n < 1) { slideIndex = slides.length }
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      slides[slideIndex - 1].style.display = "block";
+    }
+
+    function plusSlides(n) {
+      showSlides(slideIndex += n);
+    }
+
+    showSlides(slideIndex);
+  </script>
+</body>
+</html>
